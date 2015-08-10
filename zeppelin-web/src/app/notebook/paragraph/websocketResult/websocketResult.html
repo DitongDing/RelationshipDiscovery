@@ -1,0 +1,24 @@
+<div ng-show="show" style="clear: both; overflow: auto;">
+	<div ng-show="getType() == 'MESSAGE'">{{content}}</div>
+	<div ng-show="getType() == 'RELATIONSHIP' && tables.length != 0"
+		style="clear: both; overflow: auto;">
+		<div id="{{paragraphID}}_ratePool" style="position: absolute"></div>
+		<canvas id="{{paragraphID}}_canvas" width="2000" height="2000"
+			style="position: absolute;"></canvas>
+		<div ng-repeat="table in tables" class="col-xs-2">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th style="word-wrap: break-word; word-break: break-all;">{{table.tableName}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="column in table.tableColumns"
+						id="{{paragraphID + '_' + table.tableName + '_' + column.columnName}}">
+						<td style="word-wrap: break-word; word-break: break-all;">{{column.columnName}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

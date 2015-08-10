@@ -1,0 +1,19 @@
+0. Follow the typical way for add new interpreter. Then make dir in zeppelin-web/src/app/notebook/paragraph/websocketResult and copy files in web to it.
+1. add <script src="app/notebook/paragraph/websocketResult/websocketResult.controller.js"></script> to index.html file.
+2. add
+
+      <div id="{{paragraph.id}}_websocketresult"
+           ng-include src="'app/notebook/paragraph/websocketResult/websocketResult.html'"
+           ng-controller="WebsocketResultCtrl"
+           ng-Init="init(paragraph.id)"
+           ng-if="true">
+      </div>
+
+to paragraph.html after {{paragraph.id}}_error
+      
+// 3. Add 
+
+$rootScope.ddt_websocket = null;
+$rootScope.ddt_map = {};
+
+inside app.controller.js as the first line of .controller() function

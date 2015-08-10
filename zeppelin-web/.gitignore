@@ -1,0 +1,9 @@
+/target/
+/bower_components/
+/dist/
+/node/
+/node_modules/
+/test/
+/Workspace/
+/.externalToolBuilders/
+/.tmp/

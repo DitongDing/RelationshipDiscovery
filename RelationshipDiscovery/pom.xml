@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<!-- <parent> <artifactId>zeppelin</artifactId> <groupId>org.apache.zeppelin</groupId> 
+		<version>0.6.0-incubating-SNAPSHOT</version> </parent> -->
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>RelationshipDiscovery</groupId>
+	<artifactId>RelationshipDiscovery</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<properties>
+		<spark.version>1.4.1</spark.version>
+		<scala.version>2.10.5</scala.version>
+		<scala.binary.version>2.10</scala.binary.version>
+		<zeppelin.groupId>org.apache.zeppelin</zeppelin.groupId>
+		<zeppelin.version>0.6.0-incubating-SNAPSHOT</zeppelin.version>
+	</properties>
+	<repositories>
+		<repository>
+			<id>cloudera</id>
+			<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.java-websocket</groupId>
+			<artifactId>Java-WebSocket</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.databricks</groupId>
+			<artifactId>spark-csv_2.10</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-api</artifactId> 
+			</dependency> <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-log4j12</artifactId> 
+			</dependency> -->
+		<dependency>
+			<groupId>${zeppelin.groupId}</groupId>
+			<artifactId>zeppelin-spark</artifactId>
+			<version>${zeppelin.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${zeppelin.groupId}</groupId>
+			<artifactId>zeppelin-interpreter</artifactId>
+			<version>${zeppelin.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_2.10</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-repl_2.10</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-sql_2.10</artifactId>
+			<version>${spark.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scalatest</groupId>
+			<artifactId>scalatest_${scala.binary.version}</artifactId>
+			<version>2.2.4</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version><!--$NO-MVN-MAN-VER$ -->
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
