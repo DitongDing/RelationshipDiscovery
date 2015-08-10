@@ -17,6 +17,15 @@
 						id="{{paragraphID + '_' + table.tableName + '_' + column.columnName}}">
 						<td style="word-wrap: break-word; word-break: break-all;">{{column.columnName}}</td>
 					</tr>
+					<tr ng-if="tablesData[table.tableName].tableColumns.length != 0"
+						ng-click="open('{{table.tableName}}')">
+						<td>[...]</td>
+					</tr>
+					<tr
+						ng-if="table.tableColumns.length > maxColumnNum && tablesData[table.tableName].tableColumns.length == 0"
+						ng-click="close('{{table.tableName}}')">
+						<td>[close]</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>

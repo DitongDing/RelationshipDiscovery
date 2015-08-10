@@ -6,6 +6,7 @@ angular.module('zeppelinWebApp').controller(
 			$scope.paragraphID = null;
 			$scope.show = false;
 			$scope.type = "";
+			$scope.maxColumnNum = 5;
 
 			// Message
 			$scope.content = null;
@@ -13,8 +14,8 @@ angular.module('zeppelinWebApp').controller(
 			// Table
 			$scope.tables = [];
 			$scope.relationTurples = [];
-
-			var ratePool = null;
+			// Store table data
+			$scope.tablesData = {};
 
 			// make a callback in $rootScope for websocket to use
 			var closure = {
@@ -27,20 +28,53 @@ angular.module('zeppelinWebApp').controller(
 					} else if (obj.type == "CLEAN") {
 						$scope.tables = [];
 						$scope.relationTurples = [];
+						$scope.tablesData = {};
+						$("#" + $scope.paragraphID + "_ratePool").empty();
 						clean($("#" + $scope.paragraphID + "_canvas")[0]);
 					} else if (obj.type == "MESSAGE") {
 						$scope.content = obj.message;
 					} else if (obj.type == "TABLE") {
-						$scope.tables = obj.tables;
+						for (var i = 0; i < obj.tables.length; i++) {
+							var table = {
+								tableName : obj.tables[i].tableName,
+								tableRows : obj.tables[i].tableRows,
+								tableColumns : []
+							};
+							var j = 0;
+							for (; j < obj.tables[i].tableColumns.length && j < $scope.maxColumnNum; j++) {
+								obj.tables[i].tableColumns[j].related = false;
+								table.tableColumns.push(obj.tables[i].tableColumns[j]);
+							}
+							$scope.tables.push(table);
+
+							table = {
+								tableName : obj.tables[i].tableName,
+								tableRows : obj.tables[i].tableRows,
+								tableColumns : []
+							};
+							for (; j < obj.tables[i].tableColumns.length; j++) {
+								obj.tables[i].tableColumns[j].related = false;
+								table.tableColumns.push(obj.tables[i].tableColumns[j]);
+							}
+							var ID = obj.tables[i].tableName;
+							$scope.tablesData[ID] = table;
+						}
 					} else if (obj.type == "RELATIONSHIP") {
-						// $scope.relationTurples.push(obj.relationTurple);
+						// TODO: update the related property of selected column.
+						var turple = obj.relationTurple;
 						var canvas = $("#" + $scope.paragraphID + "_canvas")[0];
-						var obj1 = $("#" + $scope.paragraphID + "_" + obj.relationTurple.tableName1 + "_"
-								+ obj.relationTurple.columnName1);
-						var obj2 = $("#" + $scope.paragraphID + "_" + obj.relationTurple.tableName2 + "_"
-								+ obj.relationTurple.columnName2);
-						if (canvas != null && obj1 != null && obj2 != null)
-							drawRelation(canvas, obj1, obj2, obj.relationTurple.rate);
+
+						if (canvas != null && checkColumn(turple.tableName1, turple.columnName1)
+								&& checkColumn(turple.tableName2, turple.columnName2))
+							setTimeout(function() {
+								var obj1 = $("#" + $scope.paragraphID + "_" + turple.tableName1 + "_"
+										+ turple.columnName1);
+								var obj2 = $("#" + $scope.paragraphID + "_" + turple.tableName2 + "_"
+										+ turple.columnName2);
+								drawRelation(canvas, obj1, obj2, obj.relationTurple.rate);
+							}, 500);
+
+						$scope.relationTurples.push(obj.relationTurple);
 					}
 				}
 			}
@@ -71,7 +105,6 @@ angular.module('zeppelinWebApp').controller(
 				}
 				$scope.paragraphID = pID;
 				$rootScope.ddt_map[$scope.paragraphID] = closure;
-				ratePool = $("#" + pID + "_ratePool");
 			}
 
 			$scope.getType = function() {
@@ -80,6 +113,29 @@ angular.module('zeppelinWebApp').controller(
 				else if ($scope.type == "TABLE" || $scope.type == "RELATIONSHIP")
 					return "RELATIONSHIP";
 				return null;
+			}
+
+			$scope.open = function(tableName) {
+				var table = $scope.tables[searchList($scope.tables, "tableName", tableName)];
+				var tableData = $scope.tablesData[tableName];
+				for (var i = 0; i < tableData.tableColumns.length; i++)
+					table.tableColumns.push(tableData.tableColumns[i]);
+				tableData.tableColumns = [];
+			}
+
+			// TODO: reform table.tableColumns and tableData.columns by column.related property.
+			$scope.close = function(tableName) {
+				// alert(tableName);
+				var table = $scope.tables[searchList($scope.tables, "tableName", tableName)];
+				var tableData = $scope.tablesData[tableName];
+
+				$("#" + $scope.paragraphID + "_ratePool").empty();
+				clean($("#" + $scope.paragraphID + "_canvas")[0]);
+				setTimeout(function() {
+					var obj1 = $("#" + $scope.paragraphID + "_" + turple.tableName1 + "_" + turple.columnName1);
+					var obj2 = $("#" + $scope.paragraphID + "_" + turple.tableName2 + "_" + turple.columnName2);
+					drawRelation(canvas, obj1, obj2, obj.relationTurple.rate);
+				}, 500);
 			}
 
 			// Functions for drawing line for relationship discovery
@@ -121,7 +177,6 @@ angular.module('zeppelinWebApp').controller(
 			function clean(canvas) {
 				var context = canvas.getContext('2d');
 				context.clearRect(0, 0, canvas.width, canvas.height);
-				ratePool.empty();
 			}
 
 			function getMid(obj) {
@@ -139,12 +194,43 @@ angular.module('zeppelinWebApp').controller(
 			}
 
 			function putRate(position1, position2, rate) {
-				rate = Math.round(rate*100);
+				rate = Math.round(rate * 100);
 				var div = $("<div></div>");
 				div.html("" + rate + "%");
 				div.css("position", "absolute");
 				div.css("top", (position1.y + position2.y) / 2);
 				div.css("left", (position1.x + position2.x) / 2 - 14);
 				$("#" + $scope.paragraphID + "_ratePool").append(div);
+			}
+
+			// Used for manage table columns.
+			function searchList(list, name, value) {
+				if (list != null)
+					for (var i = 0; i < list.length; i++)
+						if (list[i][name] == value)
+							return i;
+				return -1;
+			}
+
+			function addNewColumn(tableList, tableName, column) {
+				var index = searchList(tableList, "tableName", tableName);
+				if (searchList(tableList[index].tableColumns, "columnName", column.columnName) == -1) {
+					tableList[index].tableColumns.push(column);
+				}
+			}
+
+			function checkColumn(tableName, columnName) {
+				var obj = $("#" + $scope.paragraphID + "_" + tableName + "_" + columnName);
+				if (obj.length == 0) {
+					var table = $scope.tablesData[tableName];
+					var column = searchList(table.tableColumns, "columnName", columnName);
+					if (column != -1) {
+						addNewColumn($scope.tables, tableName, table.tableColumns[column]);
+						table.tableColumns.splice(column, 1);
+						return true;
+					} else
+						return false;
+				} else
+					return true;
 			}
 		});
