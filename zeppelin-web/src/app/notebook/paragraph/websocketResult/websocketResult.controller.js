@@ -60,6 +60,19 @@ angular
 									}
 									var ID = obj.tables[i].tableName;
 									$scope.tablesData[ID] = table;
+
+									setTimeout(function() {
+										var canvas = $("#" + $scope.paragraphID + "_canvas")[0];
+										for (var i = 0; i < obj.tables.length; i++) {
+											var tableElem = $("#" + obj.tables[i].tableName + "_table");
+											tableElem.draggable({
+												containment : 'parent',
+												stop : function(event, ui) {
+													redrawAllRelation(canvas, $scope.relationTurples);
+												}
+											});
+										}
+									}, 500);
 								}
 							} else if (obj.type == "RELATIONSHIP") {
 								var turple = obj.relationTurple;
@@ -120,7 +133,6 @@ angular
 						tableData.tableColumns = [];
 					}
 
-					// TODO: reform table.tableColumns and tableData.columns by column.related property.
 					$scope.close = function(tableName) {
 						// alert(tableName);
 						var table = $scope.tables[searchList($scope.tables, "tableName", tableName)];
@@ -140,16 +152,18 @@ angular
 								tmpTableColumns.push(column);
 							}
 						table.tableColumns = tmpTableColumns;
-
-						$("#" + $scope.paragraphID + "_ratePool").empty();
-						clean(canvas);
 						setTimeout(function() {
-							for (var i = 0; i < $scope.relationTurples.length; i++)
-								drawRelation(canvas, $scope.relationTurples[i]);
+							redrawAllRelation(canvas, $scope.relationTurples);
 						}, 500);
 					}
 
-					// TODO: update the related property of selected column.
+					function redrawAllRelation(canvas, turpleList) {
+						$("#" + $scope.paragraphID + "_ratePool").empty();
+						clean(canvas);
+						for (var i = 0; i < turpleList.length; i++)
+							drawRelation(canvas, turpleList[i]);
+					}
+
 					// Functions for drawing line for relationship discovery
 					function drawRelation(canvas, turple) {
 						// set related property as true.
