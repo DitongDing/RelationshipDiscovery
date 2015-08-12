@@ -51,7 +51,7 @@ public class RelationshipInterpreter extends Interpreter {
 		String paragraphID = interpreterContext.getParagraphId();
 		List<Table> tables = new ArrayList<Table>();
 		int count = 0;
-		int MAX = 6;
+		int MAX = Integer.MAX_VALUE;
 
 		// Show table
 		websocket.broadcast(ComUtils.toJson(new WebsocketOutput(noteID, paragraphID, "CLEAN")));
