@@ -64,10 +64,19 @@ angular
 									setTimeout(function() {
 										var canvas = $("#" + $scope.paragraphID + "_canvas")[0];
 										for (var i = 0; i < obj.tables.length; i++) {
-											var tableElem = $("#" + obj.tables[i].tableName + "_table");
+											var tableElem = $("#" + $scope.paragraphID + "_" + obj.tables[i].tableName
+													+ "_table");
+											var interval;
+											// TODO: need to make the redraw relation process more efficiently.
 											tableElem.draggable({
 												containment : 'parent',
+												start : function(event, ui) {
+													interval = setInterval(function() {
+														redrawAllRelation(canvas, $scope.relationTurples);
+													}, 40);
+												},
 												stop : function(event, ui) {
+													clearInterval(interval);
 													redrawAllRelation(canvas, $scope.relationTurples);
 												}
 											});
