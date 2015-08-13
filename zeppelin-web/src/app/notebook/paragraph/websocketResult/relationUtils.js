@@ -130,11 +130,10 @@ function checkColumn(tables, tablesData, tableName, columnName) {
 	return false;
 }
 
-// function setCanvasSize(canvas) {
-// var parent = canvas.parent();
-// var height = parent.height();
-// var width = parent.width();
-// canvas.attr("height", height);
-// canvas.attr("width", width);
-// redrawAllRelation(canvas[0], $scope.relationTurples);
-// }
+function setCanvasSize(canvas) {
+	var parent = canvas.parent();
+	var height = parent.height();
+	var width = parent.width();
+	canvas.attr("height", height);
+	canvas.attr("width", width);
+}

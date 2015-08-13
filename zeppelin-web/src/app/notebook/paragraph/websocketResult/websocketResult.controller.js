@@ -65,7 +65,7 @@ angular
 									$scope.tablesData[ID] = table;
 
 									setTimeout(function() {
-										var canvas = $("#" + $scope.paragraphID + "_canvas")[0];
+										setCanvasSize($scope.canvas);
 										for (var i = 0; i < obj.tables.length; i++) {
 											var tableElem = $("#" + $scope.paragraphID + "_" + obj.tables[i].tableName
 													+ "_table");
@@ -85,13 +85,22 @@ angular
 								}
 							} else if (obj.type == "RELATIONSHIP") {
 								var turple = obj.relationTurple;
+								var parent = $scope.canvas.parent();
+								var height = parent.height();
+								var width = parent.width();
 
 								if (checkColumn($scope.tables, $scope.tablesData, turple.tableName1, turple.columnName1)
 										&& checkColumn($scope.tables, $scope.tablesData, turple.tableName2,
 												turple.columnName2))
 									setTimeout(function() {
-										drawRelation($scope.canvas, $scope.ratePool, $scope.tables, obj.relationTurple,
-												$scope.paragraphID);
+										if (parent.height() == height && parent.width() == width)
+											drawRelation($scope.canvas, $scope.ratePool, $scope.tables,
+													obj.relationTurple, $scope.paragraphID);
+										else {
+											setCanvasSize($scope.canvas);
+											redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
+													$scope.relationTurples, $scope.paragraphID);
+										}
 									}, 500);
 
 								$scope.relationTurples.push(turple);
@@ -141,6 +150,11 @@ angular
 						for (var i = 0; i < tableData.tableColumns.length; i++)
 							table.tableColumns.push(tableData.tableColumns[i]);
 						tableData.tableColumns = [];
+						setTimeout(function() {
+							setCanvasSize($scope.canvas);
+							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTurples,
+									$scope.paragraphID);
+						}, 500);
 					}
 
 					$scope.close = function(tableName) {
@@ -163,6 +177,7 @@ angular
 							}
 						table.tableColumns = tmpTableColumns;
 						setTimeout(function() {
+							setCanvasSize($scope.canvas);
 							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTurples,
 									$scope.paragraphID);
 						}, 500);

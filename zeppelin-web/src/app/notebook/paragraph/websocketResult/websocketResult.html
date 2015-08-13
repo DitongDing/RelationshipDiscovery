@@ -3,7 +3,7 @@
 	<div ng-show="getType() == 'RELATIONSHIP' && tables.length != 0"
 		style="clear: both; overflow: auto;">
 		<div id="{{paragraphID}}_ratePool" style="position: absolute"></div>
-		<canvas id="{{paragraphID}}_canvas" width="2000" height="2000" style="position: absolute;"></canvas>
+		<canvas id="{{paragraphID}}_canvas" style="position: absolute;"></canvas>
 		<div id="{{paragraphID}}_{{table.tableName}}_table"
 			ng-repeat="table in tables" style="cursor: move; padding: 15px"
 			class="col-xs-2">
