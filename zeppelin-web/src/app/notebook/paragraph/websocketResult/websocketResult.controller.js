@@ -66,17 +66,12 @@ angular
 										for (var i = 0; i < obj.tables.length; i++) {
 											var tableElem = $("#" + $scope.paragraphID + "_" + obj.tables[i].tableName
 													+ "_table");
-											var interval;
-											// TODO: need to make the redraw relation process more efficiently.
 											tableElem.draggable({
 												containment : 'parent',
-												start : function(event, ui) {
-													interval = setInterval(function() {
-														redrawAllRelation(canvas, $scope.relationTurples);
-													}, 40);
+												drag : function(event, ui) {
+													redrawAllRelation(canvas, $scope.relationTurples);
 												},
 												stop : function(event, ui) {
-													clearInterval(interval);
 													redrawAllRelation(canvas, $scope.relationTurples);
 												}
 											});
@@ -217,6 +212,16 @@ angular
 						context.moveTo(position1.x, position1.y);
 						context.lineTo(position2.x, position2.y);
 						context.stroke();
+					}
+					
+					function setCanvasSize(canvas) {
+						var canvas = $(canvas);
+						var parent = canvas.parent();
+						var height = parent.height();
+						var width = parent.width();
+						canvas.attr("height", height);
+						canvas.attr("width", width);
+						redrawAllRelation(canvas[0], $scope.relationTurples);
 					}
 
 					function clean(canvas) {

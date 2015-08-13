@@ -1,5 +1,10 @@
 0. Follow the typical way for add new interpreter. Then make dir in zeppelin-web/src/app/notebook/paragraph/websocketResult and copy files in web to it.
-1. add <script src="app/notebook/paragraph/websocketResult/websocketResult.controller.js"></script> to index.html file.
+1. add
+
+<script src="app/notebook/paragraph/websocketResult/relationUtils.js"></script>
+<script src="app/notebook/paragraph/websocketResult/websocketResult.controller.js"></script>
+
+to index.html file.
 2. add
 
       <div id="{{paragraph.id}}_websocketresult"
