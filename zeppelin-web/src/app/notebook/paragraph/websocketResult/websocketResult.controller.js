@@ -9,6 +9,8 @@ angular
 					$scope.show = false;
 					$scope.type = "";
 					$scope.maxColumnNum = 5;
+					$scope.canvas = null;
+					$scope.ratePool = null;
 
 					// Message
 					$scope.content = null;
@@ -31,11 +33,12 @@ angular
 								$scope.tables = [];
 								$scope.relationTurples = [];
 								$scope.tablesData = {};
-								$("#" + $scope.paragraphID + "_ratePool").empty();
-								clean($("#" + $scope.paragraphID + "_canvas")[0]);
+								cleanAllRelation($scope.canvas, $scope.ratePool);
 							} else if (obj.type == "MESSAGE") {
 								$scope.content = obj.message;
 							} else if (obj.type == "TABLE") {
+								$scope.canvas = $("#" + $scope.paragraphID + "_canvas");
+								$scope.ratePool = $("#" + $scope.paragraphID + "_ratePool");
 								for (var i = 0; i < obj.tables.length; i++) {
 									var table = {
 										tableName : obj.tables[i].tableName,
@@ -69,10 +72,12 @@ angular
 											tableElem.draggable({
 												containment : 'parent',
 												drag : function(event, ui) {
-													redrawAllRelation(canvas, $scope.relationTurples);
+													redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
+															$scope.relationTurples, $scope.paragraphID);
 												},
 												stop : function(event, ui) {
-													redrawAllRelation(canvas, $scope.relationTurples);
+													redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
+															$scope.relationTurples, $scope.paragraphID);
 												}
 											});
 										}
@@ -80,12 +85,13 @@ angular
 								}
 							} else if (obj.type == "RELATIONSHIP") {
 								var turple = obj.relationTurple;
-								var canvas = $("#" + $scope.paragraphID + "_canvas")[0];
 
-								if (canvas != null && checkColumn(turple.tableName1, turple.columnName1)
-										&& checkColumn(turple.tableName2, turple.columnName2))
+								if (checkColumn($scope.tables, $scope.tablesData, turple.tableName1, turple.columnName1)
+										&& checkColumn($scope.tables, $scope.tablesData, turple.tableName2,
+												turple.columnName2))
 									setTimeout(function() {
-										drawRelation(canvas, obj.relationTurple);
+										drawRelation($scope.canvas, $scope.ratePool, $scope.tables, obj.relationTurple,
+												$scope.paragraphID);
 									}, 500);
 
 								$scope.relationTurples.push(turple);
@@ -157,130 +163,8 @@ angular
 							}
 						table.tableColumns = tmpTableColumns;
 						setTimeout(function() {
-							redrawAllRelation(canvas, $scope.relationTurples);
+							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTurples,
+									$scope.paragraphID);
 						}, 500);
-					}
-
-					function redrawAllRelation(canvas, turpleList) {
-						$("#" + $scope.paragraphID + "_ratePool").empty();
-						clean(canvas);
-						for (var i = 0; i < turpleList.length; i++)
-							drawRelation(canvas, turpleList[i]);
-					}
-
-					// Functions for drawing line for relationship discovery
-					function drawRelation(canvas, turple) {
-						// set related property as true.
-						var tableColumns1 = $scope.tables[searchList($scope.tables, "tableName", turple.tableName1)].tableColumns;
-						tableColumns1[searchList(tableColumns1, "columnName", turple.columnName1)].related = true;
-						var tableColumns2 = $scope.tables[searchList($scope.tables, "tableName", turple.tableName2)].tableColumns;
-						tableColumns2[searchList(tableColumns2, "columnName", turple.columnName2)].related = true;
-
-						var obj1 = $("#" + $scope.paragraphID + "_" + turple.tableName1 + "_" + turple.columnName1);
-						var obj2 = $("#" + $scope.paragraphID + "_" + turple.tableName2 + "_" + turple.columnName2);
-						var rate = turple.rate;
-
-						var mid1 = getMid(obj1);
-						var mid2 = getMid(obj2);
-						var original = $(canvas).offset();
-
-						var position1 = {
-							x : mid1.x - original.left,
-							y : mid1.y - original.top
-						};
-
-						var position2 = {
-							x : mid2.x - original.left,
-							y : mid2.y - original.top
-						};
-
-						if (mid1.x < mid2.x) {
-							position1.x += obj1.width() / 2;
-							position2.x -= obj2.width() / 2;
-						} else {
-							position1.x -= obj1.width() / 2;
-							position2.x += obj2.width() / 2;
-						}
-
-						drawLine(canvas, position1, position2);
-						putRate(position1, position2, rate);
-					}
-
-					function drawLine(canvas, position1, position2) {
-						var context = canvas.getContext('2d');
-						context.beginPath();
-						context.moveTo(position1.x, position1.y);
-						context.lineTo(position2.x, position2.y);
-						context.stroke();
-					}
-					
-					function setCanvasSize(canvas) {
-						var canvas = $(canvas);
-						var parent = canvas.parent();
-						var height = parent.height();
-						var width = parent.width();
-						canvas.attr("height", height);
-						canvas.attr("width", width);
-						redrawAllRelation(canvas[0], $scope.relationTurples);
-					}
-
-					function clean(canvas) {
-						var context = canvas.getContext('2d');
-						context.clearRect(0, 0, canvas.width, canvas.height);
-					}
-
-					function getMid(obj) {
-						var top = obj.offset().top;
-						var left = obj.offset().left;
-						var height = obj.height();
-						var width = obj.width();
-
-						var mid = {
-							x : left + width / 2,
-							y : top + height / 2
-						}
-
-						return mid;
-					}
-
-					function putRate(position1, position2, rate) {
-						rate = Math.round(rate * 100);
-						var div = $("<div></div>");
-						div.html("" + rate + "%");
-						div.css("position", "absolute");
-						div.css("top", (position1.y + position2.y) / 2);
-						div.css("left", (position1.x + position2.x) / 2 - 14);
-						$("#" + $scope.paragraphID + "_ratePool").append(div);
-					}
-
-					// Used for manage table columns.
-					function searchList(list, name, value) {
-						if (list != null)
-							for (var i = 0; i < list.length; i++)
-								if (list[i][name] == value)
-									return i;
-						return -1;
-					}
-
-					function addNewColumn(tableList, tableName, column) {
-						var index = searchList(tableList, "tableName", tableName);
-						if (searchList(tableList[index].tableColumns, "columnName", column.columnName) == -1) {
-							tableList[index].tableColumns.push(column);
-						}
-					}
-
-					function checkColumn(tableName, columnName) {
-						var obj = $("#" + $scope.paragraphID + "_" + tableName + "_" + columnName);
-						if (obj.length == 0) {
-							var table = $scope.tablesData[tableName];
-							var column = searchList(table.tableColumns, "columnName", columnName);
-							if (column != -1) {
-								addNewColumn($scope.tables, tableName, table.tableColumns[column]);
-								table.tableColumns.splice(column, 1);
-								return true;
-							} else
-								return false;
-						} else
-							return true;
 					}
 				});
