@@ -1,18 +1,18 @@
 package spark.ibm.zeppelin.util.websocket.output;
 
-import spark.ibm.zeppelin.util.bean.table.RelationTurple;
+import spark.ibm.zeppelin.util.bean.table.RelationTuple;
 
 public class RelationshipOutput extends WebsocketOutput {
 	private static String TYPE = "RELATIONSHIP";
-	protected RelationTurple relationTurple;
+	protected RelationTuple relationTuple;
 
-	public RelationshipOutput(String noteID, String paragraphID, RelationTurple relationTurple) {
+	public RelationshipOutput(String noteID, String paragraphID, RelationTuple relationTuple) {
 		super(noteID, paragraphID, TYPE);
-		this.relationTurple = relationTurple;
+		this.relationTuple = relationTuple;
 	}
 
-	public RelationTurple getRelationTurple() {
-		return relationTurple;
+	public RelationTuple getRelationTuple() {
+		return relationTuple;
 	}
 
 }

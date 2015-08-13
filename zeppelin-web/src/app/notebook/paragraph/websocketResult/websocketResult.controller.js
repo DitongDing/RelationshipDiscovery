@@ -17,7 +17,7 @@ angular
 
 					// Table
 					$scope.tables = [];
-					$scope.relationTurples = [];
+					$scope.relationTuples = [];
 					// Store table data
 					$scope.tablesData = {};
 
@@ -31,7 +31,7 @@ angular
 								// TODO remains to be finished
 							} else if (obj.type == "CLEAN") {
 								$scope.tables = [];
-								$scope.relationTurples = [];
+								$scope.relationTuples = [];
 								$scope.tablesData = {};
 								cleanAllRelation($scope.canvas, $scope.ratePool);
 							} else if (obj.type == "MESSAGE") {
@@ -73,37 +73,37 @@ angular
 												containment : 'parent',
 												drag : function(event, ui) {
 													redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
-															$scope.relationTurples, $scope.paragraphID);
+															$scope.relationTuples, $scope.paragraphID);
 												},
 												stop : function(event, ui) {
 													redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
-															$scope.relationTurples, $scope.paragraphID);
+															$scope.relationTuples, $scope.paragraphID);
 												}
 											});
 										}
 									}, 500);
 								}
 							} else if (obj.type == "RELATIONSHIP") {
-								var turple = obj.relationTurple;
+								var tuple = obj.relationTuple;
 								var parent = $scope.canvas.parent();
 								var height = parent.height();
 								var width = parent.width();
 
-								if (checkColumn($scope.tables, $scope.tablesData, turple.tableName1, turple.columnName1)
-										&& checkColumn($scope.tables, $scope.tablesData, turple.tableName2,
-												turple.columnName2))
+								if (checkColumn($scope.tables, $scope.tablesData, tuple.tableName1, tuple.columnName1)
+										&& checkColumn($scope.tables, $scope.tablesData, tuple.tableName2,
+												tuple.columnName2))
 									setTimeout(function() {
 										if (parent.height() == height && parent.width() == width)
 											drawRelation($scope.canvas, $scope.ratePool, $scope.tables,
-													obj.relationTurple, $scope.paragraphID);
+													obj.relationTuple, $scope.paragraphID);
 										else {
 											setCanvasSize($scope.canvas);
 											redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables,
-													$scope.relationTurples, $scope.paragraphID);
+													$scope.relationTuples, $scope.paragraphID);
 										}
 									}, 500);
 
-								$scope.relationTurples.push(turple);
+								$scope.relationTuples.push(tuple);
 							}
 						}
 					}
@@ -152,7 +152,7 @@ angular
 						tableData.tableColumns = [];
 						setTimeout(function() {
 							setCanvasSize($scope.canvas);
-							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTurples,
+							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTuples,
 									$scope.paragraphID);
 						}, 500);
 					}
@@ -178,7 +178,7 @@ angular
 						table.tableColumns = tmpTableColumns;
 						setTimeout(function() {
 							setCanvasSize($scope.canvas);
-							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTurples,
+							redrawAllRelation($scope.canvas, $scope.ratePool, $scope.tables, $scope.relationTuples,
 									$scope.paragraphID);
 						}, 500);
 					}

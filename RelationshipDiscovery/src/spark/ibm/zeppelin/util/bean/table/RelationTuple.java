@@ -1,13 +1,13 @@
 package spark.ibm.zeppelin.util.bean.table;
 
-public class RelationTurple {
+public class RelationTuple {
 	protected String tableName1;
 	protected String columnName1;
 	protected String tableName2;
 	protected String columnName2;
 	protected Double rate;
 
-	public RelationTurple(String tableName1, String columnName1, String tableName2, String columnName2, Double rate) {
+	public RelationTuple(String tableName1, String columnName1, String tableName2, String columnName2, Double rate) {
 		this.tableName1 = tableName1;
 		this.columnName1 = columnName1;
 		this.tableName2 = tableName2;
