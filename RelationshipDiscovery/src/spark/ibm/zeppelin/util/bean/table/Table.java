@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.spark.sql.DataFrame;
 
+// The Java bean class for Table.
 public class Table {
 	protected String tableName;
 	protected List<Column> tableColumns;

@@ -7,6 +7,7 @@ function searchList(list, name, value) {
 	return -1;
 }
 
+// Get the position of middle point of an object.
 function getMid(obj) {
 	var top = obj.offset().top;
 	var left = obj.offset().left;
@@ -21,15 +22,18 @@ function getMid(obj) {
 	return mid;
 }
 
+// Generate the ID of column object from paragraphID, tableName, columnName.
 function getColumnID(paragraphID, tableName, columnName) {
 	return "#" + paragraphID + "_" + tableName + "_" + columnName;
 }
 
+// Add "related" flag in the object of table.
 function setRelated(tables, tableName, columnName) {
 	var tableColumns = tables[searchList(tables, "tableName", tableName)].tableColumns;
 	tableColumns[searchList(tableColumns, "columnName", columnName)].related = true;
 }
 
+// Redraw all relationship for refresh the canvas.
 function redrawAllRelation(canvas, ratePool, tables, turpleList, paragraphID) {
 	cleanAllRelation(canvas, ratePool);
 	for (var i = 0; i < turpleList.length; i++)
@@ -72,6 +76,7 @@ function drawRelation(canvas, ratePool, tables, turple, paragraphID) {
 	putRate(position1, position2, rate, ratePool);
 }
 
+// Put a div contains rate text on the webpage.
 function putRate(position1, position2, rate, ratePool) {
 	rate = Math.round(rate * 100);
 	var div = $("<div></div>");
@@ -82,6 +87,7 @@ function putRate(position1, position2, rate, ratePool) {
 	ratePool.append(div);
 }
 
+// The function used for drawing line in html5 canvas.
 function drawLine(canvas, position1, position2) {
 	var context = canvas[0].getContext('2d');
 	context.beginPath();
@@ -90,6 +96,7 @@ function drawLine(canvas, position1, position2) {
 	context.stroke();
 }
 
+// Clean the divs contain rate text and canvas of a paragraph.
 function cleanAllRelation(canvas, ratePool) {
 	if (ratePool != null && ratePool.length != 0)
 		ratePool.empty();
@@ -97,12 +104,14 @@ function cleanAllRelation(canvas, ratePool) {
 		clean(canvas);
 }
 
+// clean a html5 canvas.
 function clean(canvas) {
 	var canvas = canvas[0];
 	var context = canvas.getContext('2d');
 	context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+// push a new column into the column list.
 function addNewColumn(tableList, tableName, column) {
 	var index = searchList(tableList, "tableName", tableName);
 	if (searchList(tableList[index].tableColumns, "columnName", column.columnName) == -1)

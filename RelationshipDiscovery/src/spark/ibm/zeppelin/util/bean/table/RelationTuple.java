@@ -1,5 +1,6 @@
 package spark.ibm.zeppelin.util.bean.table;
 
+// The Java bean class for RelationTuple.
 public class RelationTuple {
 	protected String tableName1;
 	protected String columnName1;

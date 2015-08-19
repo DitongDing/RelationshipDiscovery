@@ -7,12 +7,17 @@ import spark.ibm.zeppelin.util.websocket.WebsocketServer;
 import spark.ibm.zeppelin.util.websocket.output.RelationshipOutput;
 
 public class RelationshipDiscovery {
+	
+	// input: text string, interpreterContext and websocket
+	// output: none.
+	// function: search the relationship between tables.
 	public static void discorery(String text, InterpreterContext interpreterContext, WebsocketServer websocket) {
 		String noteID = interpreterContext.getNoteId();
 		String paragraphID = interpreterContext.getParagraphId();
 
 		// TODO do real search.
 		try {
+			// Dami data.
 			Thread.sleep(1000);
 			String tableName1 = "csv";
 			String columnName1 = "cc_call_center_sk";
@@ -20,6 +25,7 @@ public class RelationshipDiscovery {
 			String columnName2 = "_1";
 			RelationshipOutput output = new RelationshipOutput(noteID, paragraphID, new RelationTuple(tableName1, columnName1, tableName2,
 					columnName2, 0.8));
+			// broadcast relationship JSON string to all clients connected with the websocket server.
 			websocket.broadcast(ComUtils.toJson(output));
 
 			Thread.sleep(1000);

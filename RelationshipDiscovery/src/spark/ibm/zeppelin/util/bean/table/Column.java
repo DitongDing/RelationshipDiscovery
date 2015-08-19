@@ -1,5 +1,6 @@
 package spark.ibm.zeppelin.util.bean.table;
 
+// The Java bean class for Column.
 public class Column {
 	protected String columnName;
 

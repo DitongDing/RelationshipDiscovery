@@ -1,5 +1,6 @@
 package spark.ibm.zeppelin.util.websocket.output;
 
+// The Java bean class for String message of websocket.
 public class Message extends WebsocketOutput {
 	private static String TYPE = "MESSAGE";
 	protected String message;

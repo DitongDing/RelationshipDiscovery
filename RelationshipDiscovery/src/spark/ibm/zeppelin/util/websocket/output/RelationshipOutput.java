@@ -2,6 +2,7 @@ package spark.ibm.zeppelin.util.websocket.output;
 
 import spark.ibm.zeppelin.util.bean.table.RelationTuple;
 
+// The Java bean class for Relationship Tuple.
 public class RelationshipOutput extends WebsocketOutput {
 	private static String TYPE = "RELATIONSHIP";
 	protected RelationTuple relationTuple;

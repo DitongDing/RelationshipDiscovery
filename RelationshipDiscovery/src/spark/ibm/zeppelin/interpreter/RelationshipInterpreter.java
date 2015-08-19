@@ -23,6 +23,7 @@ import spark.ibm.zeppelin.util.websocket.output.TableOutput;
 import spark.ibm.zeppelin.util.websocket.output.WebsocketOutput;
 
 public class RelationshipInterpreter extends Interpreter {
+	// Used for 1. create websocket connection with client and 2. sending websocket message to client side.
 	private static WebsocketServer websocket = new WebsocketServer();
 
 	static {
@@ -53,7 +54,7 @@ public class RelationshipInterpreter extends Interpreter {
 		int count = 0;
 		int MAX = Integer.MAX_VALUE;
 
-		// Show table
+		// Send table information to front end
 		websocket.broadcast(ComUtils.toJson(new WebsocketOutput(noteID, paragraphID, "CLEAN")));
 		SQLContext sqlc = getSparkInterpreter().getSQLContext();
 		String[] names = sqlc.tableNames();
@@ -64,7 +65,7 @@ public class RelationshipInterpreter extends Interpreter {
 				break;
 		websocket.broadcast(ComUtils.toJson(new TableOutput(noteID, paragraphID, tables)));
 
-		// Send relationship. Start searching.
+		// Start searching relationship between tables. Send the message to client side when a relationship is found.
 		RelationshipDiscovery.discorery(st, interpreterContext, websocket);
 
 		result = new InterpreterResult(Code.SUCCESS);

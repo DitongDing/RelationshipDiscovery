@@ -1,5 +1,6 @@
 package spark.ibm.zeppelin.util.websocket.output;
 
+// The Java bean class used for manage the structure of Output message
 public class WebsocketOutput {
 	protected String noteID;
 	protected String paragraphID;

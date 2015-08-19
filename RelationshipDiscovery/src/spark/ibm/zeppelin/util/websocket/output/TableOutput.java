@@ -4,6 +4,7 @@ import java.util.List;
 
 import spark.ibm.zeppelin.util.bean.table.Table;
 
+// The Java bean class for Table message
 public class TableOutput extends WebsocketOutput {
 	private static String TYPE = "TABLE";
 	protected List<Table> tables;

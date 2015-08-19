@@ -9,9 +9,11 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 public class WebsocketServer extends WebSocketServer {
+	// The default address and port used for websocket server
 	private static final String DEFAULT_ADDR = "0.0.0.0";
 	private static final int DEFAULT_PORT = 820;
 
+	// The list stores the connected sockets.
 	private LinkedList<WebSocket> connectedSockets = new LinkedList<WebSocket>();
 
 	public WebsocketServer() {
@@ -22,12 +24,14 @@ public class WebsocketServer extends WebSocketServer {
 		super(new InetSocketAddress(address, port));
 	}
 
+	// The function used for sending message to all connected clients.
 	public void broadcast(String message) {
 		for (WebSocket socket : connectedSockets)
 			socket.send(message);
 
 	}
 
+	// The function which will be called when a websocket client close the connection.
 	@Override
 	public void onClose(WebSocket arg0, int arg1, String arg2, boolean arg3) {
 		System.out.println("Close DDT_Websocket connection to " + arg0.getRemoteSocketAddress().getHostName() + ":" + arg0.getRemoteSocketAddress().getPort());
@@ -46,6 +50,7 @@ public class WebsocketServer extends WebSocketServer {
 		// Do nothing now
 	}
 
+	// The function which will be called when a websocket client open the connection.
 	@Override
 	public void onOpen(WebSocket arg0, ClientHandshake arg1) {
 		System.out.println("New DDT_Websocket connection from " + arg0.getRemoteSocketAddress().getHostName() + ":" + arg0.getRemoteSocketAddress().getPort());
